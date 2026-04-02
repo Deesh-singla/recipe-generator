@@ -4,6 +4,7 @@ import PantryItem from "../models/PantryItem";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../app/api/auth/[...nextauth]/options";
 import mongoose from "mongoose";
+import { connectDB } from "./mongodb";
 
 type Data = {
   ingredients: string[];
@@ -17,12 +18,15 @@ type Data = {
 export async function Get(data: Data) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session) throw new Error("session not found");
+    if (!session?.user.id) throw new Error("session not found");
 
     const ai = new GoogleGenAI({
       apiKey: process.env.GEMINI_API_KEY!,
     });
+    const ingredients = [...data.ingredients];
+
     if (data.usePantryItems) {
+      await connectDB();
       const pantryItems = await PantryItem
         .find({ userId: new mongoose.Types.ObjectId(session.user.id) })
         .select("name -_id")
@@ -31,14 +35,14 @@ export async function Get(data: Data) {
       const pantryNames = pantryItems.map(i => i.name);
       console.log(pantryNames);
 
-      data.ingredients.push(...pantryNames);
+      ingredients.push(...pantryNames);
     }
     const prompt = `
 You are a professional chef AI.
 
 Generate a recipe based on the following user input:
 
-Ingredients: ${data.ingredients.join(", ")}
+Ingredients: ${ingredients.join(", ")}
 Use pantry items: ${data.usePantryItems}
 Cuisine: ${data.cuisine}
 Diet: ${data.diet.join(", ")}

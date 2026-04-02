@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/src/app/api/auth/[...nextauth]/options";
 import { RecipeType } from "../types/types";
 import Recipe from "../models/Recipe";
+import { revalidatePath } from "next/cache";
 
 type Data = {
     ingredients: string[];
@@ -37,12 +38,38 @@ export async function saveRecipe(recipe: RecipeType) {
             ...recipe,
             userId: session.user.id
         });
-        console.log("success") 
+        revalidatePath("/recipes");
+        console.log("success")
 
         return { success: true };
 
     } catch (err) {
         console.log(err);
         throw new Error("Failed to save recipe");
+    }
+}
+
+export async function deleteRecipe(id: string) {
+    try {
+        await connectDB();
+
+        const session = await getServerSession(authOptions);
+
+        if (!session?.user.id) {
+            throw new Error("Unauthorized");
+        }
+
+        await Recipe.findOneAndDelete({
+            _id: id,
+            userId: session.user.id
+        });
+
+        revalidatePath("/recipes");
+        revalidatePath("/dashboard");
+
+        return { success: true };
+    } catch (err) {
+        console.log(err);
+        throw new Error("Failed to delete recipe");
     }
 }

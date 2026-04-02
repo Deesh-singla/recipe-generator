@@ -43,3 +43,10 @@ export type RecipeType = {
   };
   tips: string[];
 };
+
+export type SavedRecipe = RecipeType & {
+  _id: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+};
