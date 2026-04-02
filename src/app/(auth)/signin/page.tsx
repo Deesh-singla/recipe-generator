@@ -2,7 +2,13 @@ import Link from "next/link";
 import SignInForm from "@/src/components/SignInForm";
 import Image from 'next/image';
 
-export default function SignIn() {
+export default async function SignIn(props: {
+    searchParams?: Promise<{
+        error?: string;
+    }>;
+}) {
+    const searchParams = await props.searchParams;
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#eef5f2]">
             <div className="w-full max-w-md">
@@ -26,7 +32,7 @@ export default function SignIn() {
                 </div>
 
                 {/* Form Component */}
-                <SignInForm />
+                <SignInForm urlError={searchParams?.error ?? ""} />
 
                 {/* Footer */}
                 <p className="text-center text-sm text-gray-500 mt-4">

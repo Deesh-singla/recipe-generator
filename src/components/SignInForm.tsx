@@ -4,13 +4,11 @@ import { Mail, Lock } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default function SignInForm() {
+export default function SignInForm({ urlError = "" }: { urlError?: string }) {
     const [error, setError] = useState("");
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const urlError = searchParams.get("error");
 
     const errorMessage =
         urlError === "session_expired"
