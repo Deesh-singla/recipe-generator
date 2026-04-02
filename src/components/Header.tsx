@@ -13,7 +13,6 @@ export default function Header() {
         { name: "Pantry", href: "/pantry", icon: "utensils" },
         { name: "Generate", href: "/generate", icon: "chefhat" },
         { name: "Recipes", href: "/recipes", icon: "book" },
-        { name: "Meal Plan", href: "/meal-plan", icon: "calendar" },
         { name: "Shopping", href: "/shopping", icon: "shoppingcart" },
     ];
 

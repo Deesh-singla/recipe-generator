@@ -23,3 +23,23 @@ export type Query = {
     category?: string;
     name?: string|{$regex:string,$options:string};
 }
+
+export type RecipeType = {
+  title: string;
+  description: string;
+  cuisine: string;
+  difficulty: string;
+  diet: string[];
+  time: string;
+  servings: number;
+  ingredients: string[];
+  instructions: string[];
+  nutrition: {
+    calories: string;
+    protein: string;
+    carbs: string;
+    fats: string;
+    fiber: string;
+  };
+  tips: string[];
+};
